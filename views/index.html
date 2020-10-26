@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/index-article.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/login.css" />
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="/javascripts/header.js"></script>
+    <script src="/javascripts/jqPaginator.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.easing.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background: #F6F6F6">
+    <!-- 头部导航栏 -->
+    <div style="z-index: 9999;">
+        <nav style="position: fixed;top: 0;right: 0;background: white;z-index: 9999;">
+            <!-- logo -->
+            <div class="nav-logo" id="logo1" style="margin-top: 0;">
+                <img src="images/blog.png" style="margin-top: 0;height: 85%;" alt="">
+            </div>
+            <!-- 菜单 -->
+            <ul class="nav-list" id="znav">
+                <li>
+                    <a  style="color: #226DD4;" onclick="location.href='/'">首页</a>
+                </li>
+                <li><a>发现</a></li>
+
+                <li><a>Tags<div class="carect"></div></a>
+                    <ul class="menu" id="qiye1">
+                        <li><a >开启红队测试</a></li>
+                        <li><a >开通SRC</a></li>
+                        <li><a >企业登陆</a></li>
+                    </ul>
+                </li>
+                <li><a >多了解一下</a></li>
+                <li><a >关于我们</a></li>
+            </ul>
+            <div class="loginDiv" id="login">
+                <input placeholder="请输入关键词搜索" style="margin-right: 30px;border-radius: 2px;width: 200px;height: 30px;" id="searchtext"/>
+                <img src="images/search.png" style="margin-right: 20px;" width="25px" alt="" id="search" onclick="dosearch()">
+                <button id="write" style="display: none;width: 100px;height: 30px;outline: none;border-radius: 5px;background: #E33E33;color: white;color: white" onclick="location.href='/invitation/post'"><img style="width: 13px;margin-right: 2px" src="/images/pen.png" />写文章</button>
+                <ul style="float:right;position:relative;height:32px;margin:auto 20px auto 0;display:inline;" class="zhou">
+                    <li class="openlogin" style="float:left;display:block;"><a style="text-align:center;font-size:14px;float:left;display:block;width:70px;height:32px;line-height:32px;">登录</a></li>
+                    <li class="reg" style="float:left;display:block;"><a style="text-align:center;font-size:14px;float:left;display:block;width:70px;height:32px;line-height:32px;background:#6BC30D;color:#fff;">注册</a></li>
+                    <li style="display: none" id="showuser"><a><span class="theone">用户名</span><div class="carect"></div></a>
+                        <ul class="zmenu">
+                            <li><a onclick="location.href='/users'">个人主页</a></li>
+                            <li><a onclick="logout()">注销</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+
+        </nav>
+    </div>
+
+    <div style="margin-top: 30px;width: 80%;margin-left: 10%;">
+
+            <div class="divShadow" style="width: 60%;float: left;background: white;">
+                <div style="width: 100%;height: 20px;margin-top: 20px">
+                    <ul style="float: left;margin-left: 50px">
+                        <li style="float: left"><a style="font-size: 20px;color: #acacac" onclick="selfArticle()">自己的文章</a></li>
+                        <li style="float: left"><a style="font-size: 20px;color: #acacac;margin-left: 20px" onclick="allArticle()">推荐</a></li>
+                        <li style="float: left"><a style="font-size: 20px;color: #acacac;margin-left: 20px">热榜</a></li>
+                    </ul>
+                </div>
+                <div style="height: 1px;border-bottom: 1px solid #acacac;margin-top: 10px"></div>
+                <div id="articles"></div>
+                <div>
+                    <ul class="pagination" id="pagination2"></ul>
+                </div>
+            </div>
+
+            <div style="width: 35%;height: 1000px;float: left;margin-left: 4%;">
+                <div class="divShadow" style="margin: 0 10% 10% 10%;height: 200px;text-align: center;background: white;" onclick="location.href='/users'">
+                    <img style="margin-top: 8%;width: 80px" src="/images/user/userInit.png" id="userlogo"/>
+                    <p class="theone" style="margin-top: 4%;margin-bottom: 4%;font-weight: bold;font-size: 16px;color: black">匿名用户</p>
+                    <img src="images/message.png" style="width: 25px;" />
+                    <img src="images/message3.png" style="width: 25px;margin-left: 10px;margin-right: 10px;" />
+                    <img src="images/message1.png" style="width: 25px;" />
+                </div>
+                <div class="divShadow" style="margin: 10% 10% 10% 10%;height: 400px;background: white">
+                    <div style="width: 80%;margin-left: 10%">
+                        <p style="font-weight: bold;font-size: 20px;padding-top: 20px">推荐信息</p>
+                        <h5>广告推广......</h5>
+                    </div>
+
+                </div>
+            </div>
+    </div>
+
+    <script>
+        function loadArticle(res) {
+            var nums=res.length;
+            var le=nums%10==0?0:1
+            var pages=parseInt(nums/10)+le;
+
+            if(pages==0){
+                $("#articles").html("");
+                return ;
+            }
+            $.jqPaginator('#pagination2', {
+                totalPages: pages,
+                visiblePages: 10,
+                currentPage: 1,
+                first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+                prev: '<li class="prev"><a href="javascript:;">前一页</a></li>',
+                next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+                last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
+                page: '<li class="page"><a href="javascript:;">{{page}}</a></li>',
+                onPageChange: function (num, type) {
+                    $('#p2').text(type + '：' + num);
+                    $("#articles").html("");
+                    var orderBody = '';
+                    for(var i=(num-1)*10;i<nums&&i<num*10;i++){
+                        var val=res[i];
+                        orderBody += '<div style="width: 90%;margin-left: 5%;margin-top: 20px;cursor: pointer;" onclick="location.href=\'/invitation/detail/'+val._id+'\'">\
+                                        <div>\
+                                        <h2 style="margin-bottom: 5px">'+val.title+'</h2>\
+                                        <span style="font-size: 15px;color: rgba(8,55,81,0.96)">'+val.author+'：</span>\
+                                    <span style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;font-size: 13px;color: #707070;max-height: 140px;">'+val.content+'</span>\
+                                    <br />\
+                                    <img src="images/comment.png" style="width: 12px"/><span style="font-size: 14px;margin-left: 10px">'+val.comment.length+'</span>\
+                                        </div>\
+                                        </div>\
+                                        <span style="width: 80%;margin: 20px 10% 20px 10%;height: 0.5px;display: block;background: #A9A9A9;border-radius: 10px;"></span>'
+                    }
+                    $('#articles').append(orderBody);
+                }
+            });
+        }
+
+        //拿到所有文章信息
+        $.get('http://localhost:3000/invitation/getArticle', function (res) {
+            loadArticle(res);
+        })
+
+        function selfArticle() {
+            $.get('/invitation/getSelfArticle', function(res) {
+                loadArticle(res);
+            })
+        }
+
+        function allArticle() {
+            $.get('http://localhost:3000/invitation/getArticle', function (res) {
+                loadArticle(res);
+            })
+        }
+
+        function dosearch() {
+            var obj={};
+            obj.searchtext=$("#searchtext").val();
+            console.log(obj);
+            $.get('/invitation/search',obj, function(res) {
+                console.log(res);
+                loadArticle(res);
+            })
+        }
+    </script>
+
+    <script>
+
+    </script>
+
+    <div class="loginmask"></div>
+
+    <div id="loginalert">
+
+        <div class="pd20 loginpd">
+            <h3><i class="closealert fr"></i><div class="clear"></div></h3>
+            <div class="loginwrap">
+                <div class="loginh">
+                    <div class="fl">用户登录</div>
+                </div>
+                <h3><span class="fl">邮箱/用户名登录</span><span class="login_warning" style="display:none">用户名或密码错误</span><div class="clear"></div></h3>
+                <form id="login_form">
+                    <div class="logininput">
+                        <input type="text" name="username" class="loginusername" value="" placeholder="邮箱/用户名" />
+                        <input type="text" class="loginuserpasswordt" value="" placeholder="密码" />
+                        <input type="password" name="password" class="loginuserpasswordp" style="display:none" />
+                    </div>
+                    <div class="loginbtn">
+                        <div class="loginsubmit fl"><input value="登录" class="btn" onclick="login()" /></div>
+                        <div class="fl" style="margin:26px 0 0 0;"><input id="bcdl" type="checkbox" checked="true" />保持登录</div>
+                        <div class="fr" style="margin:26px 0 0 0;"><a onclick="alert('抱歉 我也无能为力....')">忘记密码?</a></div>
+                        <div class="clear"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div><!--loginalert end-->
+
+
+    <div id="reg_setp">
+        <div class="back_setp">返回</div>
+        <div class="blogo"></div>
+        <div id="setp_quicklogin">
+            <div class="logininput">
+                <input type="text" id="Rusername" name="username" class="loginusername" value="" placeholder="用户名" />
+                <input type="email" id="Remail" name="username" class="loginusername" value="" placeholder="邮箱" />
+                <input type="password" id="Rpwd" class="loginuserpasswordt" value="" placeholder="密码" />
+                <input type="password" id="Rpwd1" name="password" class="loginuserpasswordp" placeholder="再次输入密码"  />
+            </div>
+            <div class="loginsubmit fl"><input value="注册" class="btn" onclick="register()" /></div>
+            <h3>您可以用第三方帐号登陆，但未实现</h3>
+            <ul class="quicklogin_socical">
+                <li class="quicklogin_socical_weibo"><a href="">微博帐号注册</a></li>
+                <li class="quicklogin_socical_qq" style="margin:0;"><a href="">QQ帐号注册</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

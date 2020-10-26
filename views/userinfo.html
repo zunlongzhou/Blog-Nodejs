@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/index-article.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/login.css" />
+    <script src="/javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.easing.min.js"></script>
+    <title>个人主页</title>
+</head>
+<body>
+    <div class="back_setp" onclick="window.history.back(-1)">返回</div>
+    <div style="width: 40%;margin-left: 30%;height: 280px;text-align: center;margin-top: 100px"class="divShadow">
+        <img src="/images/user/userInit.png" style="width: 80px;margin-top: 20px" onclick="imgupload.click()" id="userlogo" /><br />
+        <span style="font-size: 15px;color: #acacac">用户名: </span><span style="font-size: 12px;margin-left: 10px" id="username">匿名用户</span><img src="images/edit.png" style="width: 20px;margin-left: 20px" /><br />
+        <span style="font-size: 15px;color: #acacac">邮箱: </span><span style="font-size: 12px;margin-left: 26px" id="mail">暂未绑定邮箱</span><img src="images/edit.png" style="width: 20px;margin-left: 20px" /><br />
+        <span style="font-size: 15px;color: #acacac">密码: </span><span style="font-size: 12px;margin-left: 26px" id="password">*********</span><img src="images/edit.png" style="width: 20px;margin-left: 20px" /><br />
+        <span style="font-size: 15px;color: #acacac">年龄: </span><span style="font-size: 12px;margin-left: 26px" id="old">秘密</span><img src="images/edit.png" style="width: 20px;margin-left: 20px" /><br />
+        <span style="font-size: 15px;color: #acacac">性别: </span><span style="font-size: 12px;margin-left: 26px" id="sex">秘密</span><img src="images/edit.png" style="width: 20px;margin-left: 20px" /><br />
+        <input type="file" id="imgupload" style="display: none" />
+    </div>
+
+    <script>
+        $.get('/users/getinfo', function(res){
+            if(res.length>0){
+                console.log(res[0])
+                $('#sex').text(res[0].sex);
+                $('#old').text(res[0].age);
+                $('#mail').text(res[0].mailbox)
+                $('#username').text(res[0].username)
+                var logo=res[0]._id;
+                $('#userlogo').attr('src','/images/user/'+logo+'.jpg')
+            }
+        })
+
+        $('#imgupload').on('change', function (e) {
+            console.log("=")
+            uploadimg();
+        });
+        function uploadimg(){
+            // 获取file域里的图片信息
+            var formData = new FormData()
+            //创建formdata对象
+            formData.append("test",$("#imgupload")[0].files[0])
+            // 将文件信息 append 进入formdata对象  key值 为后台 single 设置的值
+            $.ajax({
+                url: '/users/upload',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(data){
+                    if (data.err==0) {
+                        console.log("=")
+                        document.location.reload();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.log("<span style='color:#EF0000'>连接不到服务器，请检查网络！</span>");
+                }
+            });
+        }
+    </script>
+</body>
+</html>

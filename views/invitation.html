@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/index-article.css">
+    <script type="text/javascript" src="//unpkg.com/wangeditor/dist/wangEditor.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/login.css" />
+    <script src="/javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.easing.min.js"></script>
+    <script src="/javascripts/header.js"></script>
+    <title>文章详情</title>
+</head>
+<body style="background: #F6F6F6">
+    <!-- 头部导航栏 -->
+    <div style="z-index: 9999;">
+        <nav style="position: fixed;top: 0;right: 0;background: white;z-index: 9999;">
+            <!-- logo -->
+            <div class="nav-logo" id="logo1" style="margin-top: 0;">
+                <img src="/images/blog.png" style="margin-top: 0;height: 85%;" alt="">
+            </div>
+            <!-- 菜单 -->
+            <ul class="nav-list" id="znav">
+                <li>
+                    <a  style="color: #226DD4;" onclick="location.href='/'">首页</a>
+                </li>
+                <li><a>发现</a></li>
+
+                <li><a>Tags<div class="carect"></div></a>
+                    <ul class="menu" id="qiye1">
+                        <li><a >开启红队测试</a></li>
+                        <li><a >开通SRC</a></li>
+                        <li><a >企业登陆</a></li>
+                    </ul>
+                </li>
+                <li><a >多了解一下</a></li>
+                <li><a >关于我们</a></li>
+            </ul>
+            <div class="loginDiv" id="login">
+                <img src="/images/search.png" style="margin-right: 20px;" width="25px" alt="" id="search">
+                <ul style="float:right;position:relative;height:32px;margin:auto 20px auto 0;display:inline;" class="zhou">
+                    <li class="openlogin" style="float:left;display:block;"><a style="text-align:center;font-size:14px;float:left;display:block;width:70px;height:32px;line-height:32px;">登录</a></li>
+                    <li class="reg" style="float:left;display:block;"><a style="text-align:center;font-size:14px;float:left;display:block;width:70px;height:32px;line-height:32px;background:#6BC30D;color:#fff;}">注册</a></li>
+                    <li style="display: none" id="showuser"><a><span class="theone">用户名</span><div class="carect"></div></a>
+                        <ul class="zmenu">
+                            <li><a onclick="location.href='/users'">个人主页</a></li>
+                            <li><a onclick="logout()">注销</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+
+        </nav>
+    </div>
+
+    <div style="margin-top: 30px;width: 80%;margin-left: 10%;">
+
+        <div class="divShadow" style="width: 60%;float: left;background: white;">
+            <div style="margin-top: 30px;width: 80%;margin-left: 10%">
+                <div style="margin-top: 30px;margin-bottom: 20px">
+                    <h1 id="title" style="font-size: 30px;margin-bottom: 20px">文章标题</h1>
+                    <img id="userlogo" src="/images/user/userInit.png" style="width: 15px"/>
+                    <span id="username" style="font-size: 14px">作者名</span>
+                    <span id="posttime" style="margin-left: 10%">时间</span>
+                </div>
+                <div id="articles" style="height:auto!important;height:100px;min-height:100px;"></div>
+                <div style="margin-top: 20px;width: 100%;position: relative" id="exeDiv">
+                    <a style="position: absolute;right: 70px" onclick="deleteArticle()">删除</a>
+                    <a id="edit" style="position: absolute;right: 30px" onclick="editArticle()">编辑</a><br />
+                    <button id="xiugai" style=" display:none;width: 80px;border-radius: 10px;height: 30px;background: #E33E33;color: white;outline:none;" onclick="changecontent()">修改</button>
+                </div>
+                <div style="width: 90%;height: auto;margin-left: 5%;border: 1px solid #acacac;margin-top: 20px">
+                    <div><p style="font-size: 20px;font-weight: bold;margin-left: 20px">全部评论</p></div>
+                    <p style="margin-left: 50px;font-size: 12px;color: rebeccapurple;margin-top: 10px;display: none;" id="nocomment">还没有评论，快来抢沙发吧！</p>
+                    <div id="comment_content" >
+
+                    </div>
+                </div>
+                <div id="mkcomment" style="width: 90%;margin-left: 5%;margin-top: 10px"></div>
+                <div style="width: 90%;margin-left: 5%;position: relative;height: 50px;margin-top: 10px">
+                    <button style="position: absolute;right: 0;width: 80px;border-radius: 10px;height: 30px;background: #E33E33;color: white;outline:none;" onclick="comment1()">评论</button>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <div style="width: 35%;height: 1000px;float: left;margin-left: 4%;">
+            <div class="divShadow" style="margin: 0 10% 10% 10%;height: 200px;text-align: center;background: white;">
+                <p style="padding-top: 20px;font-size: 13px;color: #acacac">如果喜欢这篇文章，就点个赞吧~</p>
+                <img src="/images/like.png" style="width: 40px" id="like" onclick="likee()" /><span id="likenum">12</span>
+                <br />
+                <div style="margin-top: 30px">
+                    <img src="/images/hot.png" style="width: 20px;" /><span style="font-size: 20px;color: #70CA10">54</span><img src="/images/up.png" style="width: 20px;" />
+                    <img src="/images/read.png" style="width: 20px;margin-left: 20px" /><span style="font-size: 20px;color: #70CA10">118</span><img src="/images/up.png" style="width: 20px;" />
+                </div>
+            </div>
+            <div class="divShadow" style="margin: 10% 10% 10% 10%;height: 400px;background: white">
+                <div style="width: 80%;margin-left: 10%">
+                    <p style="font-weight: bold;font-size: 20px;padding-top: 20px">推荐信息</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var path=window.location.pathname;
+        var articleid=path.substr(19);
+        var obj = {};
+        let comment=[];
+        obj.articleid=articleid;
+
+        let userName;
+        $.ajaxSettings.async = false;
+        $.get('/getcookie', function(res) {
+            console.log(res);
+            if(JSON.stringify(res) == "{}"){
+                userName="";
+            }
+            else{
+                userName=res.username;
+            }
+
+        })
+
+        var article;
+        var like=0;
+        getDetail();
+        function getDetail() {
+            console.log("detail")
+            $.get('http://localhost:3000/invitation/getDetail', obj, function (res) {
+                console.log(res);
+                if(res.length>0){
+                    article=res[0].content;
+                    $('#userlogo').attr('src','/images/user/'+res[0].authorid+'.jpg')
+                    $("#articles").html(article);
+                    $('#title').text(res[0].title);
+                    $('#username').text(res[0].author);
+                    console.log(userName);
+                    console.log(res[0].author)
+                    if(userName==""||res[0].author!=userName){
+                        $("#exeDiv").css("display","none");
+                    }
+
+                    if(res[0].hasOwnProperty("like")){
+                        like=res[0].like;
+                    }
+                    $("#likenum").text(like);
+                    $('#posttime').text(res[0].posttime);
+                    comment=res[0].comment;
+                    loadcomment();
+                }
+                else {
+                    alert("文章不存在.....");
+                    location.href="/";
+                }
+
+            })
+        }
+
+
+
+        function loadcomment() {
+            console.log("load")
+            $('#nocomment').css("display","none")
+            if(comment.length==0){
+                $('#nocomment').css("display","")
+            }
+            let orderBody=""
+            $.each(comment, function (index, val) {
+                orderBody += '<div  style="margin-top: 10px;width: 90%;margin-left: 5%;">\
+                                <img src="/images/user/'+val.userid+'.jpg" style="width: 15px;" />\
+                                <span style="font-size: 12px;margin-left: 5px">'+val.user+'</span>\
+                                <span style="margin-left: 40px;font-size: 10px">'+val.time+'</span>\
+                                <div style="margin-left: 10%;width: 80%">'+val.content+'</div>\
+                                <hr />\
+                                </div>'
+            })
+            $('#comment_content').html(orderBody)
+        }
+
+        function likee() {
+            var obj={};
+            obj.likenum=like;
+            obj.articleid=articleid;
+            $.get('/invitation/like',obj, function(res) {
+                if(res){
+                    $("#like").attr("src","/images/liked.png");
+                    console.log($("#likenum").text())
+                    $("#likenum").text(parseInt($("#likenum").text())+1);
+                }
+            })
+        }
+    </script>
+
+    <script type="text/javascript">
+        const E = window.wangEditor
+        const editor = new E('#mkcomment')
+        editor.config.showFullScreen = false
+        editor.config.height = 200;
+        editor.config.zIndex= 1;
+        editor.config.placeholder=""
+
+        editor.config.menus = [
+            'bold',
+            'italic',
+            'underline',
+            'strikeThrough',
+            'link',
+            'emoticon',
+            'image',
+            'code',
+            'undo',
+            'redo',
+        ]
+        editor.create()
+        if(userName==""){
+            editor.$textElem.attr('contenteditable', false)
+        }
+        //
+    </script>
+    <script>
+        function comment1() {
+            var comment1=editor.txt.html();
+            var obj={};
+            obj.content=comment1;
+            obj.articleid=articleid;
+            $.post('/invitation/comment',obj, function(res) {
+                if(res){
+                    editor.txt.clear();
+                    getDetail();
+                }
+            })
+        }
+
+        function deleteArticle() {
+            var obj={};
+            obj.articleid=articleid;
+            $.get('/invitation/delete',obj, function(res) {
+                if(res) {
+                    console.log('删除成功！')
+                    location.href='/'
+                }
+            })
+        }
+        const editor1 = new E('#articles')
+        function editArticle() {
+            $("#articles").html("")
+            $("#edit").css("display","none");
+            $("#xiugai").css("display","")
+
+            editor1.config.zIndex=1;
+            editor1.create();
+            editor1.txt.html(article);
+        }
+        function changecontent(){
+            var params={};
+            params.articleid=articleid;
+            params.content=editor1.txt.html();
+            $.post('/invitation/update',params, function(res) {
+                if(res){
+                    alert('修改成功！');
+                }
+            })
+        }
+    </script>
+
+
+    <div class="loginmask"></div>
+
+    <div id="loginalert">
+
+        <div class="pd20 loginpd">
+            <h3><i class="closealert fr"></i><div class="clear"></div></h3>
+            <div class="loginwrap">
+                <div class="loginh">
+                    <div class="fl">用户登录</div>
+                </div>
+                <h3><span class="fl">邮箱/用户名登录</span><span class="login_warning" style="display:none">用户名或密码错误</span><div class="clear"></div></h3>
+                <form id="login_form">
+                    <div class="logininput">
+                        <input type="text" name="username" class="loginusername" value="" placeholder="邮箱/用户名" />
+                        <input type="text" class="loginuserpasswordt" value="" placeholder="密码" />
+                        <input type="password" name="password" class="loginuserpasswordp" style="display:none" />
+                    </div>
+                    <div class="loginbtn">
+                        <div class="loginsubmit fl"><input value="登录" class="btn" onclick="login()" /></div>
+                        <div class="fl" style="margin:26px 0 0 0;"><input id="bcdl" type="checkbox" checked="true" />保持登录</div>
+                        <div class="fr" style="margin:26px 0 0 0;"><a onclick="alert('抱歉 我也无能为力....')">忘记密码?</a></div>
+                        <div class="clear"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div><!--loginalert end-->
+
+
+    <div id="reg_setp">
+        <div class="back_setp">返回</div>
+        <div class="blogo"></div>
+        <div id="setp_quicklogin">
+            <div class="logininput">
+                <input type="text" id="Rusername" name="username" class="loginusername" value="" placeholder="用户名" />
+                <input type="email" id="Remail" name="username" class="loginusername" value="" placeholder="邮箱" />
+                <input type="password" id="Rpwd" class="loginuserpasswordt" value="" placeholder="密码" />
+                <input type="password" id="Rpwd1" name="password" class="loginuserpasswordp" placeholder="再次输入密码"  />
+            </div>
+            <div class="loginsubmit fl"><input value="注册" class="btn" onclick="register()" /></div>
+            <h3>您可以用第三方帐号登陆，但未实现</h3>
+            <ul class="quicklogin_socical">
+                <li class="quicklogin_socical_weibo"><a href="">微博帐号注册</a></li>
+                <li class="quicklogin_socical_qq" style="margin:0;"><a href="">QQ帐号注册</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
